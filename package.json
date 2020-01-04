@@ -1,0 +1,57 @@
+{
+  "name": "Tewkenaire",
+  "version": "1.0.0",
+  "description": "Tewkenaire.com bot",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
+  },
+  "keywords": [
+    "Electron",
+    "quick",
+    "start",
+    "tutorial",
+    "demo"
+  ],
+  "author": "GitHub",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "@electron-forge/cli": "^6.0.0-beta.47",
+    "@electron-forge/maker-deb": "^6.0.0-beta.47",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.47",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.47",
+    "@electron-forge/maker-zip": "^6.0.0-beta.47",
+    "electron": "^7.1.7"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-store": "^5.1.0",
+    "keytar": "^5.0.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "tronweb": "^2.8.1"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {
+        "icon": "./icon.icns"
+      },
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "tewkenaire"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        }
+      ]
+    }
+  }
+}
