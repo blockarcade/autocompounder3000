@@ -36,7 +36,10 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./icon"
+        "icon": "./icon",
+        "osxSign": {
+          "identity": "Developer ID Application: Jason Stallings (75EGRT7282)"
+        }
       },
       "makers": [
         {
