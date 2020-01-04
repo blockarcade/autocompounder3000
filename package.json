@@ -36,19 +36,14 @@
   "config": {
     "forge": {
       "packagerConfig": {
-        "icon": "./icon.icns"
+        "icon": "./icon"
       },
       "makers": [
         {
-          "name": "@electron-forge/maker-squirrel",
-          "config": {
-            "name": "tewkenaire"
-          }
-        },
-        {
           "name": "@electron-forge/maker-zip",
           "platforms": [
-            "darwin"
+            "darwin",
+            "win32"
           ]
         }
       ]

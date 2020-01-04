@@ -1,8 +1,8 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
 const path = require('path');
 const keytar = require('keytar');
-const TronWeb = require('tronweb')
+const TronWeb = require('tronweb');
 
 const HttpProvider = TronWeb.providers.HttpProvider; // This provider is optional, you can just use a url for the nodes instead
 const fullNode = new HttpProvider('https://api.trongrid.io'); // Full node http endpoint
@@ -19,6 +19,11 @@ const store = new Store({
 });
 
 let tronWeb = null;
+let appIcon = null;
+
+if (process.platform === 'darwin') {
+  app.dock.hide();
+}
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -88,6 +93,16 @@ ipcMain.on('reinvestDivs', reinvestDivs);
 ipcMain.on('refresh', refreshUI);
 
 function createWindow() {
+  if (!appIcon) {
+    appIcon = new Tray(path.join(__dirname, 'tray.png'));
+    const contextMenu = Menu.buildFromTemplate([
+      { label: 'Open', click: createWindow },
+      { label: 'Item2', type: 'separator' },
+      { label: 'Exit', click: () => app.quit() },
+    ]);
+
+    appIcon.setContextMenu(contextMenu);
+  }
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 800,
@@ -127,7 +142,11 @@ app.on('activate', function () {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) createWindow()
-})
+});
+
+app.on('window-all-closed', function () {
+  // noop;
+});
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

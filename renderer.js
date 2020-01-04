@@ -50,11 +50,11 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
         h('br'),
         h('b', null, `Tewkens: ${tewkenBalance}`),
         h('br'),
-        h('b', null, `Dividends: ${Number(tewkenDividends).toFixed(2)} TRX`),
+        h('b', null, `Rewards: ${Number(tewkenDividends).toFixed(2)} TRX`),
         h('br'),
-        h('button', { onClick: reinvestDivs }, 'Reinvest'),
+        h('button', { onClick: reinvestDivs }, 'Roll Rewards'),
         h('h2', null, 'Settings'),
-        h('h3', null, 'Auto Reinvest'),
+        h('h3', null, 'Auto Roll'),
         h('div', null, [
           h('input', { type: 'radio', value: 'true', id: 'atrue', checked: settings.autoReinvest, onChange: () => updateSettings({ autoReinvest: true }) }),
           h('label', { htmlFor: 'atrue' }, 'Enabled'),
@@ -63,7 +63,7 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
           h('input', { type: 'radio', value: 'false', id: 'afalse', checked: !settings.autoReinvest, onChange: () => updateSettings({ autoReinvest: false }) }),
           h('label', { htmlFor: 'afalse' }, 'Disabled'),
         ]),
-        h('h3', null, `Reinvest when dividends hit: ${tempChange} TRX`),
+        h('h3', null, `Roll when rewards hit: ${tempChange} TRX`),
         h('input', { type: 'range', min: '1', max: '100', step: '1', value: tempChange, onChange: (e) => {
           e.persist()
           setTempChange(e.target.value);
