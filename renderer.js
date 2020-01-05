@@ -12,16 +12,23 @@ const { useState } = React;
 const h = React.createElement;
 
 let timer = null;
+let percentTimer = null;
 
-const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewkenDividends, reinvestDivs, settings, updateSettings }) => {
+
+const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewkenDividends, reinvestDivs, settings, updateSettings, openTronLink }) => {
+  if (!settings) return h('h1', null, 'Loading...');
+
+  // console.log(window.tronWeb);
+
   const [accountName, setAccountName] = useState('');
   const [privateKey, setPrivateKey] = useState('');
   const [tempChange, setTempChange] = useState(settings.autoReinvestDivs);
+  const [tempPercent, setTempPercent] = useState(settings.autoReinvestPercent);
 
   return h('div', null, [
     h('h1', null,
       [
-        h('img', { src: './logotext.png', style: { verticalAlign: 'middle', width: '50%' } }),
+        h('img', { src: './logotext.png', style: { verticalAlign: 'middle', width: '400px' } }),
         h('span', null, ' BOT'),
       ]),
     h(React.Fragment, null, (() => {
@@ -72,6 +79,16 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
           }
           
           timer = setTimeout(() => updateSettings({ autoReinvestDivs: e.target.value }), 200);
+        } }),
+        h('h3', null, `Roll ${Number(tempPercent)*100}% of TRX rewards`),
+        h('input', { type: 'range', min: '0', max: '1', step: '0.1', value: tempPercent, onChange: (e) => {
+          e.persist()
+          setTempPercent(e.target.value);
+          if (percentTimer) {
+            clearTimeout(percentTimer);
+          }
+          
+          percentTimer = setTimeout(() => updateSettings({ autoReinvestPercent: e.target.value }), 200);
         } }),
       ];
     })())
