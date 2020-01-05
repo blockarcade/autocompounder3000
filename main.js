@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, Menu, Tray } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray, shell } = require('electron');
 const path = require('path');
 const keytar = require('keytar');
 const TronWeb = require('tronweb');
@@ -22,7 +22,7 @@ let tronWeb = null;
 let appIcon = null;
 
 if (process.platform === 'darwin') {
-  app.dock.hide();
+  // app.dock.hide();
 }
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -82,6 +82,14 @@ ipcMain.on('saveCreds', async (event, args) => {
   refreshUI();
 });
 
+ipcMain.on('showCode', async (event, args) => {
+  shell.showItemInFolder(__filename);
+});
+
+ipcMain.on('showGithub', async (event, args) => {
+  shell.openExternal('https://github.com/blockarcade/tewkenairebot');
+});
+
 ipcMain.on('signOut', async (event, args) => {
   const creds = await keytar.findCredentials('tewkenaire') || [];
   await keytar.deletePassword('tewkenaire', creds[0].account);
@@ -105,10 +113,9 @@ function createWindow() {
   }
   // Create the browser window.
   mainWindow = new BrowserWindow({
-    width: 800,
+    width: 500,
     height: 600,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: true,
     },
     backgroundColor: "#282633",

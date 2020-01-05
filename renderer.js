@@ -14,6 +14,13 @@ const h = React.createElement;
 let timer = null;
 let percentTimer = null;
 
+const openSourceCode = () => {
+  ipcRenderer.send('showCode');
+};
+
+const openGithub = () => {
+  ipcRenderer.send('showGithub');
+};
 
 const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewkenDividends, reinvestDivs, settings, updateSettings, openTronLink }) => {
   if (!settings) return h('h1', null, 'Loading...');
@@ -36,17 +43,18 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
         return h('h2', null, 'Loading...');
       } else if (!creds || creds.length === 0) {
         return [
-          h('input', { type: 'text', placeholder: 'public key', value: accountName, onChange: (e) => setAccountName(e.target.value) }),
-          h('br'),
-          h('input', { type: 'password', placeholder: 'private key', value: privateKey, onChange: (e) => setPrivateKey(e.target.value) }),
-          h('br'),
-          h('button', {
+          h('p', null, 'Tewkenaire Bot needs your Tron private key to be able to manage your account in the background. Your private key is stored in the system keychain and will only be accessible to you. Please take a moment to look over the source code using the link below.'),
+          h('p', null, h('button', { onClick: openSourceCode }, 'View Source Code')),
+          h('p', null, h('button', { onClick: openGithub }, 'View GitHub')),
+          h('p', null, h('input', { style: { fontSize: '2em', width: '400px' }, type: 'text', placeholder: 'Public Key', value: accountName, onChange: (e) => setAccountName(e.target.value) })),
+          h('p', null, h('input', { style: { fontSize: '2em', width: '400px' }, type: 'password', placeholder: 'Private Key', value: privateKey, onChange: (e) => setPrivateKey(e.target.value) })),
+          h('p', null, h('button', {
             type: 'submit', onClick: () => {
               saveCreds({ username: accountName, password: privateKey });
               setAccountName('');
               setPrivateKey('');
             }
-          }, 'Save'),
+          }, 'Save')),
         ];
       }
 
@@ -80,16 +88,16 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
           
           timer = setTimeout(() => updateSettings({ autoReinvestDivs: e.target.value }), 200);
         } }),
-        h('h3', null, `Roll ${Number(tempPercent)*100}% of TRX rewards`),
-        h('input', { type: 'range', min: '0', max: '1', step: '0.1', value: tempPercent, onChange: (e) => {
-          e.persist()
-          setTempPercent(e.target.value);
-          if (percentTimer) {
-            clearTimeout(percentTimer);
-          }
+        // h('h3', null, `Roll ${Number(tempPercent)*100}% of TRX rewards`),
+        // h('input', { type: 'range', min: '0', max: '1', step: '0.1', value: tempPercent, onChange: (e) => {
+        //   e.persist()
+        //   setTempPercent(e.target.value);
+        //   if (percentTimer) {
+        //     clearTimeout(percentTimer);
+        //   }
           
-          percentTimer = setTimeout(() => updateSettings({ autoReinvestPercent: e.target.value }), 200);
-        } }),
+        //   percentTimer = setTimeout(() => updateSettings({ autoReinvestPercent: e.target.value }), 200);
+        // } }),
       ];
     })())
   ])
