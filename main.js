@@ -3,6 +3,8 @@ const { app, BrowserWindow, ipcMain, Menu, Tray, shell } = require('electron');
 const path = require('path');
 const keytar = require('keytar');
 const TronWeb = require('tronweb');
+const pkg = require('./package.json');
+const appVersion = pkg.version;
 
 const HttpProvider = TronWeb.providers.HttpProvider; // This provider is optional, you can just use a url for the nodes instead
 const fullNode = new HttpProvider('https://api.trongrid.io'); // Full node http endpoint
@@ -104,13 +106,19 @@ function createWindow() {
   if (!appIcon) {
     appIcon = new Tray(path.join(__dirname, 'tray.png'));
     const contextMenu = Menu.buildFromTemplate([
+      { label: `v${appVersion}` },
+      { type: 'separator' },
       { label: 'Open', click: createWindow },
-      { label: 'Item2', type: 'separator' },
       { label: 'Exit', click: () => app.quit() },
     ]);
 
     appIcon.setContextMenu(contextMenu);
   }
+  if (mainWindow) {
+    mainWindow.show();
+    return;
+  }
+  
   // Create the browser window.
   mainWindow = new BrowserWindow({
     width: 500,
