@@ -18,3 +18,7 @@ cd tewkenairebot
 npm install
 npm start
 ```
+
+## License 
+
+GPL v3
