@@ -35,7 +35,7 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
   return h('div', null, [
     h('h1', null,
       [
-        h('img', { src: './logotext.png', style: { verticalAlign: 'middle', width: '400px' } }),
+        h('img', { src: './logotext.png', style: { verticalAlign: 'middle', width: '375px' } }),
         h('span', null, ' BOT'),
       ]),
     h(React.Fragment, null, (() => {
@@ -43,12 +43,14 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
         return h('h2', null, 'Loading...');
       } else if (!creds || creds.length === 0) {
         return [
-          h('p', null, 'Tewkenaire Bot needs your Tron private key to be able to manage your account in the background. Your private key is stored in the system keychain and will only be accessible to you. Please take a moment to look over the source code using the link below.'),
-          h('p', null, h('button', { onClick: openSourceCode }, 'View Source Code')),
-          h('p', null, h('button', { onClick: openGithub }, 'View GitHub')),
-          h('p', null, h('input', { style: { fontSize: '2em', width: '400px' }, type: 'text', placeholder: 'Public Key', value: accountName, onChange: (e) => setAccountName(e.target.value) })),
-          h('p', null, h('input', { style: { fontSize: '2em', width: '400px' }, type: 'password', placeholder: 'Private Key', value: privateKey, onChange: (e) => setPrivateKey(e.target.value) })),
+          h('p', { style: {textAlign: 'justify' }}, 'Tewkenaire Bot needs your Tron private key to be able to manage your account in the background. Your private key is stored in the system keychain and will only be accessible to you. Please take a moment to look over the source code using the link below.'),
+          h('div', { style: { marginTop: '25px' } }, [
+            h('img', { width: '150px', src: './images/source-code-button.png', onClick: openSourceCode }),
+            h('img', { width: '150px', src: './images/github-button.png', onClick: openGithub }),
+          ]),
+          h('p', null, h('input', { className: 'customInput', style: { fontSize: '2em', width: '420px', border: 'none', color: 'white' }, type: 'password', placeholder: 'Private Key', value: privateKey, onChange: (e) => setPrivateKey(e.target.value) })),
           h('p', null, h('button', {
+            className: 'small_button',
             type: 'submit', onClick: () => {
               saveCreds({ username: accountName, password: privateKey });
               setAccountName('');
@@ -67,7 +69,7 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
         h('br'),
         h('b', null, `Rewards: ${Number(tewkenDividends).toFixed(2)} TRX`),
         h('br'),
-        h('button', { onClick: reinvestDivs }, 'Roll Rewards'),
+        h('button', { onClick: reinvestDivs, className: 'button' }, 'Roll'),
         h('h2', null, 'Settings'),
         h('h3', null, 'Auto Roll'),
         h('div', null, [

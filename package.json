@@ -34,22 +34,6 @@
     "tronweb": "^2.8.1"
   },
   "config": {
-    "forge": {
-      "packagerConfig": {
-        "icon": "./icon",
-        "osxSign": {
-          "identity": "Developer ID Application: Jason Stallings (75EGRT7282)"
-        }
-      },
-      "makers": [
-        {
-          "name": "@electron-forge/maker-zip",
-          "platforms": [
-            "darwin",
-            "win32"
-          ]
-        }
-      ]
-    }
+    "forge": "./forge.js"
   }
 }

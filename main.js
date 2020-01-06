@@ -54,7 +54,7 @@ const refreshUI = async () => {
       creds[0].password,
     );
 
-    balance = await getBalance(creds[0].account);
+    balance = await getBalance(tronWeb.address.fromPrivateKey(creds[0].password));
     tewkenBalance = await getTewkens();
     tewkenDividends = await getTewkenDividends();
 
@@ -78,7 +78,7 @@ ipcMain.on('updateSettings', async (event, args) => {
 });
 
 ipcMain.on('saveCreds', async (event, args) => {
-  await keytar.setPassword('tewkenaire', args.username, args.password);
+  await keytar.setPassword('tewkenaire', TronWeb.address.fromPrivateKey(args.password), args.password);
   refreshUI();
 });
 
@@ -119,6 +119,8 @@ function createWindow() {
       nodeIntegration: true,
     },
     backgroundColor: "#282633",
+    resizable: false,
+    maximizable: false,
   });
 
   mainWindow.webContents.on('did-finish-load', async () => {
