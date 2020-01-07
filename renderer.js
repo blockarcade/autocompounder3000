@@ -35,9 +35,14 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
   return h('div', null, [
     h('h1', null,
       [
-        h('img', { src: './logotext.png', style: { verticalAlign: 'middle', width: '375px' } }),
-        h('span', null, ' BOT'),
-      ]),
+        h('img', { src: 'https://tewkenaire.com/images/logo.png', style: { verticalAlign: 'middle', width: '300px' } }),
+      ]
+    ),
+    h('h1', null,
+      [
+        h('img', { src: './images/autocomponder.png', style: { verticalAlign: 'middle', width: '375px' } }),
+      ]
+    ),
     h(React.Fragment, null, (() => {
       if (loading) {
         return h('h2', null, 'Loading...');
@@ -61,13 +66,12 @@ const App = ({ loading, creds, saveCreds, balance, signOut, tewkenBalance, tewke
       }
 
       return [
-        h('h2', null, ['Credentials Loaded ', h('button', { onClick: signOut }, 'Logout')]),
-        h('br'),
+        h('p', null, [h('button', { onClick: signOut }, 'Logout')]),
         h('b', null, `TRX: ${Number(balance).toFixed(2)}`),
         h('br'),
         h('b', null, `Tewkens: ${tewkenBalance}`),
         h('br'),
-        h('b', null, `Rewards: ${Number(tewkenDividends).toFixed(2)} TRX`),
+        h('b', null, `Rewards: ${Number(tewkenDividends).toFixed(3)} TRX`),
         h('br'),
         h('button', { onClick: reinvestDivs, className: 'button' }, 'Roll'),
         h('h2', null, 'Settings'),

@@ -1,5 +1,5 @@
 // Modules to control application life and create native browser window
-const { app, BrowserWindow, ipcMain, Menu, Tray, shell } = require('electron');
+const { app, BrowserWindow, ipcMain, Menu, Tray, shell, Notification } = require('electron');
 const path = require('path');
 const keytar = require('keytar');
 const TronWeb = require('tronweb');
@@ -62,6 +62,8 @@ const refreshUI = async () => {
 
     if (settings.autoReinvest && tewkenDividends > settings.autoReinvestDivs) {
       reinvestDivs();
+      const notification = new Notification({ title: 'Tewkenaire Bot', body: `Auto-roll triggered! Rolled ${tewkenDividends} TRX` });
+      notification.show();
     }
   }
 
