@@ -82,10 +82,10 @@ const App = ({
 
       return [
         h('p', null, [h('button', { onClick: signOut }, 'Logout')]),
-        h('table', { style: { width: '200px', margin: 'auto' } }, [
+        h('table', { style: { width: '300px', margin: 'auto' } }, [
           h('tr', null, [
-            h('td', { style: { fontWeight: 'bold' } }, "TRX"),
-            h('td', null, Number(balance).toFixed(2)),
+            h('td', { style: { fontWeight: 'bold' } }, "WALLET BALANCE"),
+            h('td', null, `${Number(balance).toFixed(2)} TRX`),
           ]),
         ]),
         h('div', { style: { width: '50%', display: 'inline-block', float: 'left' } }, [
@@ -129,12 +129,19 @@ const App = ({
         h('div', { style: { width: '50%', display: 'inline-block', float: 'left' } }, [
           h('h4', null, 'Stable Auto Roll'),
           h('div', null, [
-            h('input', { type: 'radio', value: 'true', id: 'atrue', checked: tempStableEnabled, onChange: () => setTempStableEnabled(true) && updateSettings({ autoReinvestStable: true }) }),
-            h('label', { htmlFor: 'atrue' }, 'Enabled'),
+            h('input', { type: 'radio', value: 'true', id: 'a2true', checked: tempStableEnabled, onChange: () => {
+              setTempStableEnabled(true);
+              updateSettings({ autoReinvestStable: true });
+            } }),
+            h('label', { htmlFor: 'a2true' }, 'Enabled'),
           ]),
           h('div', null, [
-            h('input', { type: 'radio', value: 'false', id: 'afalse', checked: !tempStableEnabled, onChange: () => setTempStableEnabled(false) && updateSettings({ autoReinvestStable: false }) }),
-            h('label', { htmlFor: 'afalse' }, 'Disabled'),
+            h('input', { type: 'radio', value: 'false', id: 'a2false', checked: !tempStableEnabled, onChange: () => {
+              setTempStableEnabled(false);
+              updateSettings({ autoReinvestStable: false });
+            } 
+            }),
+            h('label', { htmlFor: 'a2false' }, 'Disabled'),
           ]),
         ]),
         h('div', { style: { width: '50%', display: 'inline-block', float: 'left' } }, [
@@ -147,21 +154,21 @@ const App = ({
                 clearTimeout(timer);
               }
 
-              timer = setTimeout(() => updateSettings({ autoReinvestDivs: e.target.value }), 200);
+              timer = setTimeout(() => updateSettings({ autoReinvestDivs: e.target.value }), 1000);
             }
           }),
         ]),
         h('div', { style: { width: '50%', display: 'inline-block', float: 'left' } }, [
           h('p', null, `Roll ${Number(tempPercent) * 100}% of TRX rewards`),
           h('input', {
-            type: 'range', disabled: true, min: '0', max: '1', step: '0.1', value: tempPercent, onChange: (e) => {
+            type: 'range', min: '0', max: '1', step: '0.1', value: tempPercent, onChange: (e) => {
               e.persist()
               setTempPercent(e.target.value);
               if (percentTimer) {
                 clearTimeout(percentTimer);
               }
 
-              percentTimer = setTimeout(() => updateSettings({ autoReinvestPercent: e.target.value }), 200);
+              percentTimer = setTimeout(() => updateSettings({ autoReinvestPercent: e.target.value }), 1000);
             }
           }),
         ]),
