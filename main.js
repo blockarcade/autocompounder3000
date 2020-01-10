@@ -16,6 +16,7 @@ const store = new Store({
     tewkenaire: {
       autoReinvest: false,
       autoReinvestDivs: 5,
+      autoReinvestStable: false,
     },
   },
 });
@@ -32,10 +33,20 @@ if (process.platform === 'darwin') {
 let mainWindow;
 
 const tewkenaireAddress = 'TCSw8e8M6BRUYvh1vHhHZCZPiiBrcDjv7R';
+const stableTewkenaireAddress = 'TTAPfMU7HusxL2j6mDQocquAUTdhAvScep';
 
-const reinvestDivs = async () => {
+const reinvestDivs = async (amount) => {
   const feeLimit = 5e6;
   const tewken = await tronWeb.contract().at(tewkenaireAddress);
+  await tewken.reinvest().send({
+    callValue: 0,
+    feeLimit,
+  });
+};
+
+const reinvestStableDivs = async () => {
+  const feeLimit = 5e6;
+  const tewken = await tronWeb.contract().at(stableTewkenaireAddress);
   await tewken.reinvest().send({
     callValue: 0,
     feeLimit,
@@ -48,6 +59,8 @@ const refreshUI = async () => {
   let balance = 0;
   let tewkenBalance = 0;
   let tewkenDividends = 0;
+  let stableTewkenBalance = 0;
+  let stableTewkenDividends = 0;
   if (creds.length > 0) {
     tronWeb = new TronWeb(
       fullNode,
@@ -59,16 +72,32 @@ const refreshUI = async () => {
     balance = await getBalance(tronWeb.address.fromPrivateKey(creds[0].password));
     tewkenBalance = await getTewkens();
     tewkenDividends = await getTewkenDividends();
+    stableTewkenBalance = await getStableTewkens();
+    stableTewkenDividends = await getStableTewkenDividends();
 
     if (settings.autoReinvest && tewkenDividends > settings.autoReinvestDivs) {
       reinvestDivs();
-      const notification = new Notification({ title: 'Tewkenaire Bot', body: `Auto-roll triggered! Rolled ${tewkenDividends} TRX` });
+      const notification = new Notification({ title: 'Autocompounder 3000', body: `Auto-roll triggered! Rolled ${tewkenDividends} in TRX in CrazyTewkens` });
+      notification.show();
+    }
+
+    if (settings.autoReinvestStable && stableTewkenDividends > settings.autoReinvestDivs) {
+      reinvestStableDivs();
+      const notification = new Notification({ title: 'Autocompounder 3000', body: `Auto-roll triggered! Rolled ${stableTewkenDividends} TRX` });
       notification.show();
     }
   }
 
   if (mainWindow) {
-    mainWindow.webContents.send('loaded', { creds, balance, tewkenBalance, tewkenDividends, settings });
+    mainWindow.webContents.send('loaded', { 
+      creds, 
+      balance, 
+      tewkenBalance, 
+      tewkenDividends, 
+      settings,
+      stableTewkenBalance,
+      stableTewkenDividends,
+    });
   }
 };
 
@@ -100,7 +129,10 @@ ipcMain.on('signOut', async (event, args) => {
   refreshUI();
 });
 
-ipcMain.on('reinvestDivs', reinvestDivs);
+ipcMain.on('reinvestDivs', () => {
+  reinvestDivs();
+  reinvestStableDivs();
+});
 
 ipcMain.on('refresh', refreshUI);
 
@@ -199,6 +231,34 @@ const getTewkenDividends = async () => {
   let tewkenBalance;
   try {
     const result = await tewken.myDividends(true).call();
+    tewkenBalance = tronWeb.fromSun(result.toString());
+  } catch (e) {
+    console.log(e);
+    tewkenBalance = 0;
+  }
+
+  return tewkenBalance;
+} 
+
+const getStableTewkens = async () => {
+  const tewken = await tronWeb.contract().at(stableTewkenaireAddress);
+  let tewkenBalance;
+  try {
+    const result = await tewken.myTokens().call();
+    tewkenBalance = Number(result / 1e6).toFixed(2);
+  } catch (e) {
+    console.log(e);
+    tewkenBalance = 0;
+  }
+
+  return tewkenBalance;
+}
+
+const getStableTewkenDividends = async () => {
+  const tewken = await tronWeb.contract().at(stableTewkenaireAddress);
+  let tewkenBalance;
+  try {
+    const result = await tewken.myDividends().call();
     tewkenBalance = tronWeb.fromSun(result.toString());
   } catch (e) {
     console.log(e);
