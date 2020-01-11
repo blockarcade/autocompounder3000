@@ -93,52 +93,66 @@ const reinvestStableDivs = async (divs, percent) => {
   }
 };
 
+let refreshing = false;
+
 const refreshUI = async () => {
-  const settings = store.get('tewkenaire');
-  const creds = await keytar.findCredentials('tewkenaire') || [];
-  let balance = 0;
-  let tewkenBalance = 0;
-  let tewkenDividends = 0;
-  let stableTewkenBalance = 0;
-  let stableTewkenDividends = 0;
-  if (creds.length > 0) {
-    tronWeb = new TronWeb(
-      fullNode,
-      solidityNode,
-      eventServer,
-      creds[0].password,
-    );
-
-    balance = await getBalance(tronWeb.address.fromPrivateKey(creds[0].password));
-    tewkenBalance = Number(await getTewkens());
-    tewkenDividends = Number(await getTewkenDividends());
-    stableTewkenBalance = Number(await getStableTewkens());
-    stableTewkenDividends = Number(await getStableTewkenDividends());
-
-    if (settings.autoReinvest && tewkenDividends > Number(settings.autoReinvestDivs)) {
-      reinvestDivs(tewkenDividends, settings.autoReinvestPercent);
-      const notification = new Notification({ title: 'Autocompounder 3000', body: `Auto-roll triggered! Rolled ${tewkenDividends} in TRX in CrazyTewkens` });
-      notification.show();
-    }
-
-    if (settings.autoReinvestStable && stableTewkenDividends > Number(settings.autoReinvestDivs)) {
-      reinvestStableDivs(stableTewkenDividends, settings.autoReinvestPercent);
-      const notification = new Notification({ title: 'Autocompounder 3000', body: `Auto-roll triggered! Rolled ${stableTewkenDividends} TRX` });
-      notification.show();
-    }
+  if (refreshing) {
+    return;
   }
 
-  if (mainWindow) {
-    mainWindow.webContents.send('loaded', {
-      creds,
-      balance,
-      tewkenBalance,
-      tewkenDividends,
-      settings,
-      stableTewkenBalance,
-      stableTewkenDividends,
-    });
+  refreshing = true;
+
+  try {
+    const settings = store.get('tewkenaire');
+    const creds = await keytar.findCredentials('tewkenaire') || [];
+    let balance = 0;
+    let tewkenBalance = 0;
+    let tewkenDividends = 0;
+    let stableTewkenBalance = 0;
+    let stableTewkenDividends = 0;
+    if (creds.length > 0) {
+      tronWeb = new TronWeb(
+        fullNode,
+        solidityNode,
+        eventServer,
+        creds[0].password,
+      );
+
+      balance = await getBalance(tronWeb.address.fromPrivateKey(creds[0].password));
+      tewkenBalance = Number(await getTewkens());
+      tewkenDividends = Number(await getTewkenDividends());
+      stableTewkenBalance = Number(await getStableTewkens());
+      stableTewkenDividends = Number(await getStableTewkenDividends());
+
+      if (settings.autoReinvest && tewkenDividends > Number(settings.autoReinvestDivs)) {
+        reinvestDivs(tewkenDividends, settings.autoReinvestPercent);
+        const notification = new Notification({ title: 'Autocompounder 3000', body: `Auto-roll triggered! Rolled ${tewkenDividends} in TRX in CrazyTewkens` });
+        notification.show();
+      }
+
+      if (settings.autoReinvestStable && stableTewkenDividends > Number(settings.autoReinvestDivs)) {
+        reinvestStableDivs(stableTewkenDividends, settings.autoReinvestPercent);
+        const notification = new Notification({ title: 'Autocompounder 3000', body: `Auto-roll triggered! Rolled ${stableTewkenDividends} TRX` });
+        notification.show();
+      }
+    }
+
+    if (mainWindow) {
+      mainWindow.webContents.send('loaded', {
+        creds,
+        balance,
+        tewkenBalance,
+        tewkenDividends,
+        settings,
+        stableTewkenBalance,
+        stableTewkenDividends,
+      });
+    }
+  } catch (e) {
+    console.log(e);
   }
+
+  refreshing = false;
 };
 
 setInterval(refreshUI, 1000);
