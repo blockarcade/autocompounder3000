@@ -1,10 +1,10 @@
-# Tewkenaire Bot
+# Tewkenaire AutoCompounder 3000
 
 ![](./screenshot.png)
 
 ## Description
 
-Tewkenaire Bot uses TronWeb and [node-keytar](https://github.com/atom/node-keytar) to be able to automate tasks on the Tron blockchain for Tewkenaire.com.
+Tewkenaire AutoCompounder 3000 uses TronWeb and [node-keytar](https://github.com/atom/node-keytar) to be able to automate tasks on the Tron blockchain for Tewkenaire.com.
 
 ## [Download](https://github.com/blockarcade/tewkenairebot/releases/latest)
 
